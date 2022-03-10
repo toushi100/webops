@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  db:
+    image: "mysql:5.7"
+    restart: always
+    environment:
+     MYSQL_ROOT_PASSWORD: 3766
+     MYSQL_USERNAME: root
+     MYSQL_PASSWORD: 3766
+        - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - db:/var/run/mysqld
+    logging:
+            driver: none
+    ports:
+      - "33061:3306"
+  redis:
+    image: redis:4.0-alpine
+    command: redis-server
+    volumes:
+      - redis:/data
+    ports:
+      - 6379
+    logging:
+            driver: none
+  app: 
+        build: .
+        volumes: 
+            - .:/app
+            
+        ports: 
+            - "3001:3000"
+        depends_on:
+            - db
+        links:
+            - db
+        environment:
+            DB_USER: root
+            DB_NAME: webops_development
+            DB_PASSWORD: 3766
+            DB_HOST: db
+volumes:
+  db:
+  bundle:
+  redis:
